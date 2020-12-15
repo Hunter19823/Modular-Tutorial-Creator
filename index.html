@@ -4,51 +4,85 @@
         <title>Example Question</title>
     </head>
     <body>
-        <div>
-            <h3>True or False, Expression 2 is an Object Oriented Language.</h3>
-            <p>Choose 1 answer</p>
-            <hr />
-            <div id='block-1'>
-                <label for='option-1'>
-                    <input type='radio' name='option' value='True' id='option-1' />
-                True</label>
-                <span id='result-1'></span>
-            </div>
-            <hr />
-            <div id='block-2'>
-                <label for='option-2'>
-                    <input type='radio' name='option' value='True' id='option-2' />
-                False</label>
-                <span id='result-2'></span>
-            </div>
-            <hr />
-            <button type='button' onclick='checkResult()'>Check</button>
-        </div>
-        <a id='resultDescription'></a>
-        <script>
-            
-            
-            function checkResult() {
-                var solution = {1:true,2:false};
-                for(var i=1; i<=2; i++){
-                    if(document.getElementById('option-'+i).checked){
-                        if(solution[i]){
-                            document.getElementById('block-'+i).style.border = '3px solid limegreen';
-                            document.getElementById('result-'+i).style.color = 'limegreen';
-                            document.getElementById('result-'+i).innerHTML = 'Correct!';
-                        }else{
-                            document.getElementById('block-'+i).style.border = '3px solid red';
-                            document.getElementById('result-'+i).style.color = 'red';
-                            document.getElementById('result-'+i).innerHTML = 'Incorrect!';
+        <div id='Questions'>
+            <script>
+                const questions = {};
+                const QuestionsElement = document.getElementById('Questions');
+                    Object.size = function(obj) {
+                        var size = 0, key;
+                        for (key in obj) {
+                            if (obj.hasOwnProperty(key)) size++;
                         }
-                    }else{
-                        
+                        return size;
+                    };
+                
+                class MultipleChoiceQuestion{
+                    constructor(question, options, correctOption){
+                        this.question = question;
+                        this.options = options;
+                        this.correct = correctOption;
+                    }
+                    
+                    create(){
+                        this.element = document.createElement("div");
+                        this.element.id = 'Question-'+(Object.size(questions)+1);
+                        questions[this.element.id] = this
+                        QuestionsElement.appendChild(this.element);
                     }
                     
                 }
+                new MultipleChoiceQuestion(
+                'True or False, Expression 2 is an Object Oriented Language.',
+                ['True','False'],'True').create();
+                new MultipleChoiceQuestion(
+                'True or False, Expression 2 is an Object Oriented Language.',
+                ['True','False'],'True').create();
+                
+                
+                function checkResult() {
+                    var solution = {1:true,2:false};
+                    for(var i=1; i<=2; i++){
+                        if(document.getElementById('option-'+i).checked){
+                            if(solution[i]){
+                                document.getElementById('block-'+i).style.border = '3px solid limegreen';
+                                document.getElementById('result-'+i).style.color = 'limegreen';
+                                document.getElementById('result-'+i).innerHTML = 'Correct!';
+                            }else{
+                                document.getElementById('block-'+i).style.border = '3px solid red';
+                                document.getElementById('result-'+i).style.color = 'red';
+                                document.getElementById('result-'+i).innerHTML = 'Incorrect!';
+                            }
+                        }else{
+                            
+                        }
+                        
+                    }
+                
+                }
             
-            }
+            </script>
+            <div>
+                <h3>True or False, Expression 2 is an Object Oriented Language.</h3>
+                <p>Choose 1 answer</p>
+                <hr />
+                <div id='block-1'>
+                    <label for='option-1'>
+                        <input type='radio' name='option' value='True' id='option-1' />
+                    True</label>
+                    <span id='result-1'></span>
+                </div>
+                <hr />
+                <div id='block-2'>
+                    <label for='option-2'>
+                        <input type='radio' name='option' value='True' id='option-2' />
+                    False</label>
+                    <span id='result-2'></span>
+                </div>
+                <hr />
+                <button type='button' onclick='checkResult()'>Check</button>
+            </div>
+            <a id='resultDescription'></a>
+        </div>
         
-        </script>
     </body>
 </html>
