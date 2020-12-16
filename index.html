@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Example Question</title>
+        <title>Example Questions</title>
         <style>
         div.correct {
             border: 3px solid limegreen;
@@ -28,18 +28,72 @@
             <script>
                 const questions = {};
                 const QuestionsElement = document.getElementById('Questions');
-                    Object.size = function(obj) {
-                        var size = 0, key;
-                        for (key in obj) {
-                            if (obj.hasOwnProperty(key)) size++;
+                Object.size = function(obj) {
+                    var size = 0, key;
+                    for (key in obj) {
+                        if (obj.hasOwnProperty(key)) size++;
+                    }
+                    return size;
+                };
+                
+                class Option{
+                    constructor(value){
+                        this.value = value;
+                        this.correct = function(){
+                            this.div.className = 'correct';
+                            this.span.className = 'correct';
+                            this.span.innerHTML = 'Correct!';
+                        };
+                        this.incorrect = function(){
+                            this.div.className = 'incorrect';
+                            this.span.className = 'incorrect';
+                            this.span.innerHTML = 'Incorrect!';
+                        };
+                        this.hide = function(){
+                            this.div.className = '';
+                            this.span.className = '';
                         }
-                        return size;
-                    };
+                    }
+                    create(id, index){
+                        this.id = id;
+                        this.index = index;
+                        let div, label, input, span;
+                        div         = document.createElement('div');
+                        div.id      = id+"-block-"+(index);
+                        
+                        label       = document.createElement('label');
+                        label.for   = id+'-option-'+(index);
+                        
+                        input       = document.createElement('input');
+                        input.type  = 'radio';
+                        input.name  = 'option';
+                        input.value = this.value;
+                        input.id    = id+'-option-'+(index);
+                        
+                        span        = document.createElement('span');
+                        span.id     = id+'-result-'+(index);
+                        
+                        label.appendChild(input);
+                        label.innerHTML += this.value;
+                        div.appendChild(label);
+                        div.appendChild(document.createElement('br'));
+                        div.appendChild(span);
+                        this.div = div;
+                        this.label = label;
+                        this.span = span;
+                        this.input = input;
+                        return div;
+                    }
+                    
+                }
                 
                 class MultipleChoiceQuestion{
                     constructor(question, options, solutions){
                         this.question = question;
-                        this.options = options;
+                        this.options = [];
+                        for(let i=0; i<options.length;i++){
+                            this.options.push(new Option(options[i]));
+                        }
                         this.solutions = solutions;
                     }
                     
@@ -58,28 +112,7 @@
                         this.element.appendChild(document.createElement('hr'));
                         for(index=0; index<this.options.length; index++){
                             item = this.options[index];
-                            let div, label, input, span;
-                            div = document.createElement('div');
-                            div.id = this.element.id+"-block-"+(index+1);
-                            
-                            label = document.createElement('label');
-                            label.for=this.element.id+'-option-'+(index+1);
-                            
-                            input = document.createElement('input');
-                            input.type = 'radio';
-                            input.name = 'option';
-                            input.value = item;
-                            input.id = this.element.id+'-option-'+(index+1);
-                            
-                            span = document.createElement('span');
-                            span.id = this.element.id+'-result-'+(index+1);
-                            
-                            label.appendChild(input);
-                            label.innerHTML += item;
-                            div.appendChild(label);
-                            div.appendChild(document.createElement('br'));
-                            div.appendChild(span);
-                            this.element.appendChild(div);
+                            this.element.appendChild(item.create(this.element.id,index+1));
                             this.element.appendChild(document.createElement('hr'));
                         }
                         
@@ -96,25 +129,25 @@
                             option = document.getElementById(this.element.id+'-option-'+i);
                             if(option.checked){
                                 if(this.solutions.includes(option.value)){
-                                    document.getElementById(this.element.id+'-block-'+i).className = 'correct';
-                                    document.getElementById(this.element.id+'-result-'+i).className = 'correct';
-                                    document.getElementById(this.element.id+'-result-'+i).innerHTML = 'Correct!';
+                                    this.options[i-1].correct();
                                 }else{
-                                    document.getElementById(this.element.id+'-block-'+i).className = 'incorrect';
-                                    document.getElementById(this.element.id+'-result-'+i).className = 'incorrect';
-                                    document.getElementById(this.element.id+'-result-'+i).innerHTML = 'Incorrect!';
+                                    this.options[i-1].incorrect();
                                 }
                             }else{
-                                document.getElementById(this.element.id+'-block-'+i).className = '';
-                                document.getElementById(this.element.id+'-result-'+i).className = '';
+                                this.options[i-1].div.className = '';
+                                this.options[i-1].span.className = '';
                             }
-                        
                         }
+                    }
+                    
+                    addOption(value){
+                        let option = new Option(value);
+                        this.options.push(option);
+                        return option;
                     }
                     
                 }
                 function checkQuestion(button){
-                    console.log(button.srcElement.parentElement.id);
                     questions[button.srcElement.parentElement.id].check();
                 }
                 
@@ -123,9 +156,9 @@
                 ['True','False'],'True').create();
                 
                 new MultipleChoiceQuestion(
-                'Which segment of code will print Hello World in chat?',
+                'Which segment of code will print Hello World to the player\'s chat?',
                 ['println("Hello World");','log("Hello World")', 'Print(Hello World)', 'print("Hello World")', 'Print("Hello World")','print(Hello World)'],'print("Hello World")').create();
-            
+                
             </script>
         </div>
         
