@@ -2,6 +2,26 @@
 <html lang="en">
     <head>
         <title>Example Question</title>
+        <style>
+        div.correct {
+            border: 3px solid limegreen;
+        }
+        span {
+            display: none;
+        
+        }
+        span.correct {
+            color: limegreen;
+            display: inline;
+        }
+        div.incorrect {
+            border: 3px solid red;
+        }
+        span.incorrect {
+            color: red;
+            display: inline;
+        }
+        </style>
     </head>
     <body>
         <div id='Questions'>
@@ -17,71 +37,96 @@
                     };
                 
                 class MultipleChoiceQuestion{
-                    constructor(question, options, correctOption){
+                    constructor(question, options, solutions){
                         this.question = question;
                         this.options = options;
-                        this.correct = correctOption;
+                        this.solutions = solutions;
                     }
                     
                     create(){
-                        this.element = document.createElement("div");
+                        let title, description, index, item, button;
+                        this.element = document.createElement('div');
                         this.element.id = 'Question-'+(Object.size(questions)+1);
                         questions[this.element.id] = this
                         QuestionsElement.appendChild(this.element);
+                        title = document.createElement('h3');
+                        title.innerText = this.question;
+                        this.element.appendChild(title);
+                        description = document.createElement('p');
+                        description.innerText = 'Choose 1 answer.';
+                        this.element.appendChild(description);
+                        this.element.appendChild(document.createElement('hr'));
+                        for(index=0; index<this.options.length; index++){
+                            item = this.options[index];
+                            let div, label, input, span;
+                            div = document.createElement('div');
+                            div.id = this.element.id+"-block-"+(index+1);
+                            
+                            label = document.createElement('label');
+                            label.for=this.element.id+'-option-'+(index+1);
+                            
+                            input = document.createElement('input');
+                            input.type = 'radio';
+                            input.name = 'option';
+                            input.value = item;
+                            input.id = this.element.id+'-option-'+(index+1);
+                            
+                            span = document.createElement('span');
+                            span.id = this.element.id+'-result-'+(index+1);
+                            
+                            label.appendChild(input);
+                            label.innerHTML += item;
+                            div.appendChild(label);
+                            div.appendChild(document.createElement('br'));
+                            div.appendChild(span);
+                            this.element.appendChild(div);
+                            this.element.appendChild(document.createElement('hr'));
+                        }
+                        
+                        button = document.createElement('button');
+                        button.type = 'button';
+                        button.innerText = 'Check';
+                        button.onclick = function(button){checkQuestion(button)};
+                        this.element.appendChild(button);
+                    }
+                    
+                    check(){
+                        let i,option;
+                        for(i=1; i<=this.options.length;i++){
+                            option = document.getElementById(this.element.id+'-option-'+i);
+                            if(option.checked){
+                                if(this.solutions.includes(option.value)){
+                                    document.getElementById(this.element.id+'-block-'+i).className = 'correct';
+                                    document.getElementById(this.element.id+'-result-'+i).className = 'correct';
+                                    document.getElementById(this.element.id+'-result-'+i).innerHTML = 'Correct!';
+                                }else{
+                                    document.getElementById(this.element.id+'-block-'+i).className = 'incorrect';
+                                    document.getElementById(this.element.id+'-result-'+i).className = 'incorrect';
+                                    document.getElementById(this.element.id+'-result-'+i).innerHTML = 'Incorrect!';
+                                }
+                            }else{
+                                document.getElementById(this.element.id+'-block-'+i).className = '';
+                                document.getElementById(this.element.id+'-result-'+i).className = '';
+                            }
+                        
+                        }
                     }
                     
                 }
-                new MultipleChoiceQuestion(
-                'True or False, Expression 2 is an Object Oriented Language.',
-                ['True','False'],'True').create();
-                new MultipleChoiceQuestion(
-                'True or False, Expression 2 is an Object Oriented Language.',
-                ['True','False'],'True').create();
-                
-                
-                function checkResult() {
-                    var solution = {1:true,2:false};
-                    for(var i=1; i<=2; i++){
-                        if(document.getElementById('option-'+i).checked){
-                            if(solution[i]){
-                                document.getElementById('block-'+i).style.border = '3px solid limegreen';
-                                document.getElementById('result-'+i).style.color = 'limegreen';
-                                document.getElementById('result-'+i).innerHTML = 'Correct!';
-                            }else{
-                                document.getElementById('block-'+i).style.border = '3px solid red';
-                                document.getElementById('result-'+i).style.color = 'red';
-                                document.getElementById('result-'+i).innerHTML = 'Incorrect!';
-                            }
-                        }else{
-                            
-                        }
-                        
-                    }
-                
+                function checkQuestion(button){
+                    console.log(button.srcElement.parentElement.id);
+                    questions[button.srcElement.parentElement.id].check();
                 }
+                
+                new MultipleChoiceQuestion(
+                'True or False, Expression 2 is an Object Oriented Language.',
+                ['True','False'],'True').create();
+                
+                new MultipleChoiceQuestion(
+                'Which segment of code will print Hello World in chat?',
+                ['println("Hello World");','log("Hello World")', 'Print(Hello World)', 'print("Hello World")', 'Print("Hello World")','print(Hello World)'],'print("Hello World")').create();
             
             </script>
-            <div>
-                <h3>True or False, Expression 2 is an Object Oriented Language.</h3>
-                <p>Choose 1 answer</p>
-                <hr />
-                <div id='block-1'>
-                    <label for='option-1'>
-                        <input type='radio' name='option' value='True' id='option-1' />
-                    True</label>
-                    <span id='result-1'></span>
-                </div>
-                <hr />
-                <div id='block-2'>
-                    <label for='option-2'>
-                        <input type='radio' name='option' value='True' id='option-2' />
-                    False</label>
-                    <span id='result-2'></span>
-                </div>
-                <hr />
-                <button type='button' onclick='checkResult()'>Check</button>
-            </div>
-            <a id='resultDescription'></a>
         </div>
         
     </body>
