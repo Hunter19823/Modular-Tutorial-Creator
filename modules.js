@@ -7,25 +7,24 @@ Object.size = function(obj) {
     }
     return size;
 };
-
 class Option{
-    constructor(value){
+    constructor(value, isSolution){
         this.value = value;
-        this.correctMessage = 'Correct!';
-        this.correct = function(){
-            this.div.className = 'correct';
-            this.span.className = 'correct';
-            this.span.innerHTML = this.correctMessage;
-        };
-        this.incorrectMessage = 'Incorrect!';
-        this.incorrect = function(){
-            this.div.className = 'incorrect';
-            this.span.className = 'incorrect';
-            this.span.innerHTML = this.incorrectMessage;
-        };
-        this.hide = function(){
-            this.div.className = '';
-            this.span.className = '';
+        this.correct = isSolution;
+        if(isSolution){
+            this.message = 'Correct!';
+            this.check = function(){
+                this.div.className = 'correct';
+                this.span.className = 'correct';
+                this.span.innerHTML = this.incorrectMessage;
+            };
+        }else{
+            this.message = 'Incorrect!';
+            this.check = function(){
+                this.div.className = 'incorrect';
+                this.span.className = 'incorrect';
+                this.span.innerHTML = this.incorrectMessage;
+            };
         }
     }
     create(id, index){
@@ -56,26 +55,32 @@ class Option{
         this.label = label;
         this.span = span;
         this.input = input;
+        this.onUncheck();
         return div;
     }
-    setIncorrectMessage(message){
-        this.incorrectMessage = message;
+    hide(){
+        this.div.className = '';
+        this.span.className = '';
+    }
+    setMessage(message){
+        this.message = message;
         return this;
     }
-    setCorrectMessage(message){
-        this.correctMessage = message;
-        return this;
+    onCheck(onCheckFunction){
+        this.check = onCheckFunction;
+    }
+    set(isCorrect){
+        this.correct = isCorrect;
     }
 }
 
 class MultipleChoiceQuestion{
-    constructor(question, options, solutions){
+    constructor(question, options){
         this.question = question;
         this.options = [];
         for(let i=0; i<options.length;i++){
-            this.options.push(new Option(options[i]));
+            this.options.push(new Option(options[i],false));
         }
-        this.solutions = solutions;
     }
     
     create(){
@@ -109,26 +114,21 @@ class MultipleChoiceQuestion{
         for(i=1; i<=this.options.length;i++){
             option = document.getElementById(this.element.id+'-option-'+i);
             if(option.checked){
-                if(this.solutions.includes(option.value)){
-                    this.options[i-1].correct();
-                }else{
-                    this.options[i-1].incorrect();
-                }
+                this.options[i-1].check();
+                // if(this.options[i-1].correct)
             }else{
-                this.options[i-1].div.className = '';
-                this.options[i-1].span.className = '';
+                this.options[i-1].hide();
             }
         }
     }
     
     addOption(value){
-        let option = new Option(value);
+        let option = new Option(value,false);
         this.options.push(option);
         return option;
     }
     addSolution(solution){
-        this.solutions.push(solution);
-        return this;
+        return addOption(solution,true);
     }
     
 }
