@@ -2,6 +2,7 @@ let q;
 q = new MultipleChoiceQuestion(
 'True or False, Expression 2 is an Object Oriented Language.',
 ['True','False']);
+q.setSolution(0);
 q.create();
 
 q = new MultipleChoiceQuestion(

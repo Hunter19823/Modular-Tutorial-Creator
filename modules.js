@@ -11,7 +11,7 @@ class Option{
     constructor(value = 'default', isSolution=false){
         this.value = value;
         this.correct = isSolution;
-        defaultLogic();
+        this.defaultLogic();
     }
     defaultLogic(){
         if(this.correct == true){
@@ -91,7 +91,6 @@ class MultipleChoiceQuestion{
             }
         }
     }
-    
     create(){
         let title, description, index, item, button;
         this.element = document.createElement('div');
@@ -117,7 +116,6 @@ class MultipleChoiceQuestion{
         button.onclick = function(button){checkQuestion(button)};
         this.element.appendChild(button);
     }
-    
     check(){
         let i,option;
         for(i=1; i<=this.options.length;i++){
@@ -137,6 +135,18 @@ class MultipleChoiceQuestion{
     }
     addSolution(solution){
         return this.addOption(solution,true);
+    }
+    setSolution(index){
+        let option = this.getOption(index);
+        if(option){
+            option.setCorrect();
+            option.defaultLogic();
+        }
+    }
+    getOption(index){
+        if((index>=0 && index<this.options.length)){
+            return this.options[index];
+        }
     }
     
 }
