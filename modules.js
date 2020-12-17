@@ -8,10 +8,23 @@ Object.size = function(obj) {
     return size;
 };
 class Option{
-    constructor(value = 'default', isSolution=false){
+    constructor(value = 'default', isSolution=false, message, check){
         this.value = value;
         this.correct = isSolution;
-        this.defaultLogic();
+        if(message === undefined && check === undefined){
+            this.defaultLogic();
+        }else{
+            if(message !== undefined){
+                this.message = message;
+            }else{
+                this.message = 'Default';
+            }
+            if(check !== undefined){
+                this.check = check;
+            }else{
+                this.check = function(){};
+            }
+        }
     }
     defaultLogic(){
         if(this.correct == true){
