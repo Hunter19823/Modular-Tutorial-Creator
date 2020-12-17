@@ -16,3 +16,10 @@ span.incorrect {
     color: red;
     display: inline;
 }
+div.confused {
+    border: 3px solid blue;
+}
+span.confused {
+    color: blue;
+    display: inline;
+}

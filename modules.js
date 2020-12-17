@@ -12,20 +12,25 @@ class Option{
         if(typeof key == 'string'){
             this.value = key;
             this.correct = isSolution;
-            if(message === undefined && check === undefined){
-                this.defaultLogic();
-            }else{
-                this.message = message !== undefined ? message : 'Default';
-                this.check = check !== undefined ? check : function(){this.span.innerHTML = this.message;};
+            this.defaultLogic();
+            if(typeof check === 'function'){
+                this.check = check;
+            }
+            if(typeof message !== 'undefined'){
+                this.message = message;
             }
         }else{
-            this.value = key['value'] ? key['value'] : 'Default';
-            this.correct = key['correct'] ? key['correct'] : false;
-            if(key['message'] && !key['check']){
-                this.defaultLogic();
-            }else{
-                this.message = key['message'] ? key['message'] : 'Default';
-                this.check = key['check'] ? key['check'] : function(){this.span.innerHTML = this.message;};
+            this.value = typeof key['value'] !== 'undefined' ? key['value'] : 'Default';
+            this.correct = typeof key['correct'] === 'boolean' ? key['correct'] : false;
+            this.defaultLogic();
+            if(typeof key['check'] === 'function'){
+                this.check = key['check'];
+            }
+            if(typeof key['hide'] === 'function'){
+                this.check = key['hide'];
+            }
+            if(typeof key['message'] !== 'undefined'){
+                this.message = key['message'];
             }
             
         }
@@ -109,14 +114,14 @@ class MultipleChoiceQuestion{
                 }
             }
         }else{
-            this.question = key['question'] ? key['question'] : 'Default Question';
+            this.question = typeof key['question'] !== 'undefined' ? key['question'] : 'Default Question';
             this.options = [];
-            if(key['options']){
+            if(typeof key['options'] !== 'undefined'){
                 for(let i=0; i<key['options'].length;i++){
                     if(key['options'][i] instanceof Option){
                         this.options.push(key['options'][i]);
                     }else{
-                        this.options.push(new Option(key['options'][i],false));
+                        this.options.push(new Option(key['options'][i]));
                     }
                 }
             }
@@ -152,10 +157,13 @@ class MultipleChoiceQuestion{
         for(i=1; i<=this.options.length;i++){
             option = document.getElementById(this.element.id+'-option-'+i);
             if(option.checked){
-                this.options[i-1].check();
-                // if(this.options[i-1].correct)
-            }else{
                 this.options[i-1].hide();
+            }
+        }
+        for(i=1; i<=this.options.length;i++){
+            option = document.getElementById(this.element.id+'-option-'+i);
+            if(option.checked){
+                this.options[i-1].check();
             }
         }
     }
