@@ -16,14 +16,14 @@ class Option{
             this.check = function(){
                 this.div.className = 'correct';
                 this.span.className = 'correct';
-                this.span.innerHTML = this.incorrectMessage;
+                this.span.innerHTML = this.message;
             };
         }else{
             this.message = 'Incorrect!';
             this.check = function(){
                 this.div.className = 'incorrect';
                 this.span.className = 'incorrect';
-                this.span.innerHTML = this.incorrectMessage;
+                this.span.innerHTML = this.message;
             };
         }
     }
@@ -55,7 +55,7 @@ class Option{
         this.label = label;
         this.span = span;
         this.input = input;
-        this.onUncheck();
+        this.hide();
         return div;
     }
     hide(){
@@ -68,9 +68,11 @@ class Option{
     }
     onCheck(onCheckFunction){
         this.check = onCheckFunction;
+        return this;
     }
     set(isCorrect){
         this.correct = isCorrect;
+        return this;
     }
 }
 
@@ -121,14 +123,18 @@ class MultipleChoiceQuestion{
             }
         }
     }
-    
     addOption(value){
         let option = new Option(value,false);
         this.options.push(option);
         return option;
     }
+    addOption(value,isCorrect){
+        let option = new Option(value,isCorrect);
+        this.options.push(option);
+        return option;
+    }
     addSolution(solution){
-        return addOption(solution,true);
+        return this.addOption(solution,true);
     }
     
 }
