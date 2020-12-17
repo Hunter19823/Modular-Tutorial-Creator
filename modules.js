@@ -1,4 +1,4 @@
-const questions = {};
+const QUESTIONS = {};
 const QuestionsElement = document.getElementById('Questions');
 Object.size = function(obj) {
     var size = 0, key;
@@ -99,6 +99,12 @@ class Option{
         this.correct = true;
         return this;
     }
+    remove(){
+        this.div.remove();
+        if(this['seperator']){
+            this.seperator.remove();
+        }
+    }
 }
 
 class MultipleChoiceQuestion{
@@ -130,8 +136,8 @@ class MultipleChoiceQuestion{
     create(){
         let title, description, index, item, button;
         this.element = document.createElement('div');
-        this.element.id = 'Question-'+(Object.size(questions)+1);
-        questions[this.element.id] = this
+        this.element.id = 'Question-'+(Object.size(QUESTIONS)+1);
+        QUESTIONS[this.element.id] = this
         QuestionsElement.appendChild(this.element);
         title = document.createElement('h3');
         title.innerText = this.question;
@@ -143,9 +149,9 @@ class MultipleChoiceQuestion{
         for(index=0; index<this.options.length; index++){
             item = this.options[index];
             this.element.appendChild(item.create(this.element.id,index+1));
-            this.element.appendChild(document.createElement('hr'));
+            item.seperator = document.createElement('hr');
+            this.element.appendChild(item.seperator);
         }
-        
         button = document.createElement('button');
         button.type = 'button';
         button.innerText = 'Check';
@@ -155,15 +161,19 @@ class MultipleChoiceQuestion{
     check(){
         let i,option;
         for(i=1; i<=this.options.length;i++){
-            option = document.getElementById(this.element.id+'-option-'+i);
-            if(option.checked){
-                this.options[i-1].hide();
+            if(this.options[i-1] !== undefined){
+                option = document.getElementById(this.element.id+'-option-'+i);
+                if(option.checked){
+                    this.options[i-1].hide();
+                }
             }
         }
         for(i=1; i<=this.options.length;i++){
-            option = document.getElementById(this.element.id+'-option-'+i);
-            if(option.checked){
-                this.options[i-1].check();
+            if(this.options[i-1] !== undefined){
+                option = document.getElementById(this.element.id+'-option-'+i);
+                if(option.checked){
+                    this.options[i-1].check();
+                }
             }
         }
     }
@@ -187,8 +197,20 @@ class MultipleChoiceQuestion{
             return this.options[index];
         }
     }
+    removeOption(index){
+        let option = this.getOption(index);
+        if(option){
+            option.remove();
+            delete this.options[index];
+        }
+    }
+    remove(){
+        let id = this.element.id;
+        this.element.remove();
+        delete QUESTIONS[id];
+    }
     
 }
 function checkQuestion(button){
-    questions[button.srcElement.parentElement.id].check();
+    QUESTIONS[button.srcElement.parentElement.id].check();
 }

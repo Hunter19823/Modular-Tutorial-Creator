@@ -42,6 +42,9 @@ q = new MultipleChoiceQuestion({
                 this.div.className = 'confused';
                 this.span.className = 'confused';
                 this.span.innerHTML = this.message;
+            },
+            hide: function(){
+                QUESTIONS[this.id].removeOption(4);
             }
         }
     ]
