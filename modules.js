@@ -7,6 +7,21 @@ Object.size = function(obj) {
     }
     return size;
 };
+Array.prototype.shuffle = function() {
+  var remainingElements = this.length, replacementElement, randomElement;
+
+  // While there remain elements to shuffle…
+  while (remainingElements) {
+
+    // Pick a random remaining element from the array.
+    randomElement = Math.floor(Math.random() * remainingElements--);
+
+    // Swap the current element with the random element.
+    replacementElement = this[remainingElements];
+    this[remainingElements] = this[randomElement];
+    this[randomElement] = replacementElement;
+  }
+}
 class Option{
     constructor(key = 'default', isSolution=false, message, check){
         if(typeof key == 'string'){
@@ -27,7 +42,7 @@ class Option{
                 this.check = key['check'];
             }
             if(typeof key['hide'] === 'function'){
-                this.check = key['hide'];
+                this.hide = key['hide'];
             }
             if(typeof key['message'] !== 'undefined'){
                 this.message = key['message'];
@@ -80,7 +95,6 @@ class Option{
         this.label = label;
         this.span = span;
         this.input = input;
-        this.hide();
         return div;
     }
     hide(){
@@ -162,17 +176,11 @@ class MultipleChoiceQuestion{
         let i,option;
         for(i=1; i<=this.options.length;i++){
             if(this.options[i-1] !== undefined){
-                option = document.getElementById(this.element.id+'-option-'+i);
-                if(!option.checked){
-                    this.options[i-1].hide();
-                }
-            }
-        }
-        for(i=1; i<=this.options.length;i++){
-            if(this.options[i-1] !== undefined){
-                option = document.getElementById(this.element.id+'-option-'+i);
+                option = document.getElementById(this.element.id+'-option-'+this.options[i-1].index);
                 if(option.checked){
                     this.options[i-1].check();
+                }else{
+                    this.options[i-1].hide();
                 }
             }
         }
@@ -202,6 +210,7 @@ class MultipleChoiceQuestion{
         if(option){
             option.remove();
             delete this.options[index];
+            return option;
         }
     }
     remove(){
@@ -209,7 +218,9 @@ class MultipleChoiceQuestion{
         this.element.remove();
         delete QUESTIONS[id];
     }
-    
+    shuffle(){
+        this.options.shuffle();
+    }
 }
 function checkQuestion(button){
     QUESTIONS[button.srcElement.parentElement.id].check();

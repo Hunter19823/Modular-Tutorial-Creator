@@ -3,12 +3,13 @@ q = new MultipleChoiceQuestion(
 'True or False, Expression 2 is an Object Oriented Language.',
 ['True','False']);
 q.setSolution(0);
+q.shuffle();
 q.create();
 
 q = new MultipleChoiceQuestion(
 'Which segment of code will print Hello World to the player\'s chat?',
 ['println("Hello World");','log("Hello World")', 'Print(Hello World)', new Option('print("Hello World")',true), 'Print("Hello World")','print(Hello World)']);
-
+q.shuffle();
 q.create();
 
 q = new MultipleChoiceQuestion(
@@ -19,6 +20,7 @@ q.addOption('vec(256,0,0)').setMessage('Incorrect!<br>That was the correct synta
 q.addOption('vec(0,256,0)').setMessage('Incorrect!<br>That was the correct syntax, and not the correct color, and that represents the minimum intensity.');
 q.addOption('vec(0,0,256)').setMessage('Incorrect!<br>That was the correct syntax, and that was the correct color, but that represents the minimum intensity, not the maximum.');
 q.addOption('vec(0,0,255)',true).setMessage('Correct!<br>That was the correct syntax, and the correct color.');
+q.shuffle();
 q.create();
 
 q = new MultipleChoiceQuestion({
@@ -27,7 +29,7 @@ q = new MultipleChoiceQuestion({
         'Vector',
         {
             value: 'Table',
-            message: '<h1>Correct!</h1><br>A Table uses Strings as a key, allowing you to store an entity with the key being their name, or steamID, etc...',
+            message: '<h4>Correct!</h4><br>A Table uses Strings as a key, allowing you to store an entity with the key being their name, or steamID, etc...',
             correct: true
         },
         {
@@ -36,19 +38,22 @@ q = new MultipleChoiceQuestion({
         },
         'Ranger',
         {
-            value:'Sandwitch',
-            message: 'Oops!<br>This choice isn\'t supposed to be here!',
+            value:'Sandwich',
+            message: 'Oh No!<br>This choice will automatically self-destruct when hidden! How cruel!',
             check: function(){
+                console.log('check');
                 this.div.className = 'confused';
                 this.span.className = 'confused';
                 this.span.innerHTML = this.message;
             },
             hide: function(){
-                QUESTIONS[this.id].removeOption(4);
+                console.log('hide');
+                console.log(QUESTIONS[this.id].removeOption(this.index-1));
             }
         }
     ]
 });
 q.getOption(0).setMessage('Vectors are for storing xyz coordinates, not entities.');
 q.getOption(3).setMessage('Rangers are not meant for storing new information, but rather gathering existing data from the world.');
+q.shuffle();
 q.create();
