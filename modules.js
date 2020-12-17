@@ -163,7 +163,7 @@ class MultipleChoiceQuestion{
         for(i=1; i<=this.options.length;i++){
             if(this.options[i-1] !== undefined){
                 option = document.getElementById(this.element.id+'-option-'+i);
-                if(option.checked){
+                if(!option.checked){
                     this.options[i-1].hide();
                 }
             }
