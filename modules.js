@@ -97,14 +97,28 @@ class Option{
 }
 
 class MultipleChoiceQuestion{
-    constructor(question = 'Default Question', options = []){
-        this.question = question;
-        this.options = [];
-        for(let i=0; i<options.length;i++){
-            if(options[i] instanceof Option){
-                this.options.push(options[i]);
-            }else{
-                this.options.push(new Option(options[i],false));
+    constructor(key = 'Default Question', options = []){
+        if(typeof key == 'string'){
+            this.question = key;
+            this.options = [];
+            for(let i=0; i<options.length;i++){
+                if(options[i] instanceof Option){
+                    this.options.push(options[i]);
+                }else{
+                    this.options.push(new Option(options[i],false));
+                }
+            }
+        }else{
+            this.question = key['question'] ? key['question'] : 'Default Question';
+            this.options = [];
+            if(key['options']){
+                for(let i=0; i<key['options'].length;i++){
+                    if(key['options'][i] instanceof Option){
+                        this.options.push(key['options'][i]);
+                    }else{
+                        this.options.push(new Option(key['options'][i],false));
+                    }
+                }
             }
         }
     }
