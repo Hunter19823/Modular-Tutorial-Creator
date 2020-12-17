@@ -8,10 +8,13 @@ Object.size = function(obj) {
     return size;
 };
 class Option{
-    constructor(value, isSolution){
+    constructor(value = 'default', isSolution=false){
         this.value = value;
         this.correct = isSolution;
-        if(isSolution){
+        defaultLogic();
+    }
+    defaultLogic(){
+        if(this.correct == true){
             this.message = 'Correct!';
             this.check = function(){
                 this.div.className = 'correct';
@@ -70,18 +73,22 @@ class Option{
         this.check = onCheckFunction;
         return this;
     }
-    set(isCorrect){
-        this.correct = isCorrect;
+    setCorrect(){
+        this.correct = true;
         return this;
     }
 }
 
 class MultipleChoiceQuestion{
-    constructor(question, options){
+    constructor(question = 'Default Question', options = []){
         this.question = question;
         this.options = [];
         for(let i=0; i<options.length;i++){
-            this.options.push(new Option(options[i],false));
+            if(options[i] instanceof Option){
+                this.options.push(options[i]);
+            }else{
+                this.options.push(new Option(options[i],false));
+            }
         }
     }
     
@@ -123,12 +130,7 @@ class MultipleChoiceQuestion{
             }
         }
     }
-    addOption(value){
-        let option = new Option(value,false);
-        this.options.push(option);
-        return option;
-    }
-    addOption(value,isCorrect){
+    addOption(value,isCorrect = false){
         let option = new Option(value,isCorrect);
         this.options.push(option);
         return option;
